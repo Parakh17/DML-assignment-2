@@ -1,0 +1,60 @@
+project:
+  name: "recommendation-pipeline"
+  version: "1.0.0"
+
+paths:
+  raw_data_dir: "data/raw"
+  processed_data_dir: "data/processed"
+  features_data_dir: "data/features"
+  errors_data_dir: "data/errors"
+  models_dir: "models"
+  reports_dir: "reports"
+
+data_source:
+  kaggle_dataset: "prajitdatta/movielens-100k-dataset"
+  files:
+    ratings: "u.data"
+    items: "u.item"
+    users: "u.user"
+
+validation:
+  rating_min: 1.0
+  rating_max: 5.0
+  user_age_min: 1
+  user_age_max: 120
+  timestamp_min: 700000000  # Unix timestamp lower bound (~1992)
+
+preparation:
+  time_split_ratio: 0.20    # 80% train, 20% test (chronological split)
+  relevance_threshold: 3.5  # Ratings >= 3.5 considered relevant for ranking metrics
+
+features:
+  user_features:
+    - "user_avg_rating"
+    - "user_rating_count"
+    - "user_rating_std"
+    - "days_since_last_interaction"
+  item_features:
+    - "item_popularity"
+    - "item_avg_rating"
+    - "item_rating_count"
+
+models:
+  baseline:
+    type: "popularity"
+    top_k: 10
+  collaborative_filtering:
+    type: "matrix_factorization_svd"
+    n_factors: 20
+    learning_rate: 0.005
+    reg: 0.02
+    n_epochs: 25
+
+evaluation:
+  k_values: [5, 10]
+  relevance_threshold: 3.5
+
+mlflow:
+  experiment_name: "recommendation_system_pipeline"
+  tracking_uri: "sqlite:///mlflow.db"
+

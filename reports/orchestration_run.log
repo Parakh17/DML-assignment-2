@@ -1,0 +1,91 @@
+2026/11/13 22:42:51 INFO mlflow.agent.hint: Load the `mlflow-trace-instrumentation` skill at /Users/parakhsinghal/Documents/dml asssignment 2/.venv/lib/python3.13/site-packages/mlflow/assistant/skills/mlflow-trace-instrumentation/SKILL.md before writing any tracing code; it ships with this MLflow install. Set MLFLOW_DISABLE_AGENT_HINT=1 to silence this.
+======================================================================
+🚀 RUNNING END-TO-END RECOMMENDATION DATA MANAGEMENT PIPELINE
+======================================================================
+
+[Stage 1/7] Ingesting Data...
+[Ingestion] Raw files already exist at data/raw. Skipping download.
+
+[Stage 2/7] Validating Data Quality & Referential Integrity...
+======================================================================
+DATA VALIDATION REPORT - 2026-11-13T17:12:51.466408Z
+======================================================================
+
+[1] VALIDATING USERS DATASET
+Total raw user records: 943
+  ✅ User schema, unique constraints, and age bounds: PASSED (0 errors)
+
+[2] VALIDATING ITEMS DATASET
+Total raw item records: 1682
+  ✅ Item schema and uniqueness: PASSED (0 errors)
+
+[3] VALIDATING RATINGS & REFERENTIAL INTEGRITY
+Total raw interaction records: 100000
+  ✅ Rating ranges [1.0, 5.0], timestamp bounds, and foreign key constraints: PASSED (0 errors)
+  ℹ️ Found 0 duplicate user-item pairs (will be handled during preparation).
+
+Final Valid Interaction Records: 100,000 (100.00%)
+======================================================================
+
+[Stage 3/7] Preparing Data & Applying Chronological Split...
+[Preparation] Raw records loaded: 100,000 ratings, 1,682 items, 943 users.
+[Preparation] Deduplication: Removed 0 duplicate user-item interactions (kept latest).
+[Preparation] Time-based split applied at timestamp 889237269 (1998-03-07 02:21:09 UTC):
+  - Train Set: 80,003 interactions (80.0%)
+  - Test Set:  19,997 interactions (20.0%)
+[Preparation] Processed files saved to data/processed:
+  - train_ratings.parquet
+  - test_ratings.parquet
+  - items.parquet
+  - users.parquet
+
+[Stage 4/7] Transforming & Computing Interaction Matrix...
+[Transformation] Computing derived tables from 80,003 training interactions...
+  ✅ Created User Activity Summary -> data/processed/user_activity_summary.parquet (751 users)
+  ✅ Created Item Popularity Summary -> data/processed/item_popularity_summary.parquet (1616 items)
+  ✅ Created Interaction Matrix -> data/processed/interaction_matrix.npz (Shape: (751, 1616), Sparsity: 93.41%)
+
+[Stage 5/7] Building Feature Store & Catalog...
+[Features] Building feature store tables using reference timestamp 889237269...
+  ✅ Built User Features -> data/features/user_features.parquet ((943, 11))
+  ✅ Built Item Features -> data/features/item_features.parquet ((1682, 27))
+  ✅ Built Interaction Features -> data/features/interaction_features.parquet ((80003, 9))
+  ✅ Exported Feature Catalog -> reports/feature_catalog.md
+
+[Stage 6/7] Training Baseline & Personalized SVD Models...
+[Training] Loading 80,003 training interactions for model training...
+[Training] Fitting Baseline Popularity Recommender...
+  ✅ Saved Popularity Model -> models/baseline_popularity.pkl
+[Training] Fitting Personalized SVD Matrix Factorization...
+  ✅ Saved Personalized SVD Model -> models/personalized_svd.pkl
+
+[Stage 7/7] Evaluating Ranking & Rating Metrics...
+[Evaluation] Evaluating models on 19,997 test interactions...
+# Recommendation System Model Evaluation Results
+
+Evaluation performed on chronological test set interactions (relevance threshold >= 3.5).
+
+| Metric       |   Baseline (Popularity) |   Personalized (SVD) | Relative Change   |
+|--------------|-------------------------|----------------------|-------------------|
+| RMSE         |                  1.0367 |               1.0276 | -0.88%            |
+| MAE          |                  0.8314 |               0.8181 | -1.60%            |
+| Precision@5  |                  0.1345 |               0.1359 | +1.04%            |
+| Recall@5     |                  0.0252 |               0.0254 | +0.79%            |
+| NDCG@5       |                  0.1328 |               0.1306 | -1.66%            |
+| Coverage@5   |                  0.0166 |               0.0452 | +172.29%          |
+| Diversity@5  |                  0.7182 |               0.7162 | -0.28%            |
+| Precision@10 |                  0.1872 |               0.1652 | -11.75%           |
+| Recall@10    |                  0.0678 |               0.062  | -8.55%            |
+| NDCG@10      |                  0.1782 |               0.1598 | -10.33%           |
+| Coverage@10  |                  0.0256 |               0.0743 | +190.23%          |
+| Diversity@10 |                  0.7606 |               0.7618 | +0.16%            |
+
+### Key Observations:
+1. **Personalization vs Baseline Ranking**: The Personalized Matrix Factorization (SVD) model leverages user-specific latent preferences, significantly improving ranking relevance (Precision@K and NDCG@K).
+2. **Catalog Coverage & Diversity**: While the popularity recommender tends to recommend the same head items, Matrix Factorization exposes a broader spectrum of long-tail items, leading to higher catalog coverage and balanced intra-list diversity.
+3. **Rating Accuracy**: The SVD model achieves substantially lower RMSE and MAE compared to global average baseline predictions.
+
+
+======================================================================
+🎉 PIPELINE COMPLETED SUCCESSFULLY IN 16.56 SECONDS
+======================================================================

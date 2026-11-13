@@ -1,0 +1,19 @@
+======================================================================
+DATA VALIDATION REPORT - 2026-11-13T17:17:48.159570Z
+======================================================================
+
+[1] VALIDATING USERS DATASET
+Total raw user records: 943
+  ✅ User schema, unique constraints, and age bounds: PASSED (0 errors)
+
+[2] VALIDATING ITEMS DATASET
+Total raw item records: 1682
+  ✅ Item schema and uniqueness: PASSED (0 errors)
+
+[3] VALIDATING RATINGS & REFERENTIAL INTEGRITY
+Total raw interaction records: 100000
+  ✅ Rating ranges [1.0, 5.0], timestamp bounds, and foreign key constraints: PASSED (0 errors)
+  ℹ️ Found 0 duplicate user-item pairs (will be handled during preparation).
+
+Final Valid Interaction Records: 100,000 (100.00%)
+======================================================================
