@@ -1,5 +1,7 @@
 # End-to-End Data Management Pipeline for a Recommendation System
 
+**Repository**: [https://github.com/Parakh17/DML-assignment-2](https://github.com/Parakh17/DML-assignment-2)  
+
 An enterprise-grade, reproducible data management and machine learning pipeline for recommendation systems. Built with **Python**, **Pandas**, **PyArrow/Parquet**, **Pandera**, **Scikit-Learn/SciPy**, **MLflow**, and **Prefect / Apache Airflow**.
 
 ---

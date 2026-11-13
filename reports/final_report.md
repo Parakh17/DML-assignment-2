@@ -3,6 +3,7 @@
 **Course**: Data Management for Machine Learning (DM4ML)  
 **Project**: End-to-End Recommendation Data Pipeline  
 **Dataset**: MovieLens 100K Benchmark  
+**GitHub Repository**: [https://github.com/Parakh17/DML-assignment-2](https://github.com/Parakh17/DML-assignment-2)  
 **Date**: November 2026  
 
 ---
@@ -157,6 +158,12 @@ The workflow is orchestrated using **Prefect** (`dags/pipeline_flow.py`) and Apa
 $$\text{Ingestion} \rightarrow \text{Validation} \rightarrow \text{Preparation} \rightarrow [\text{Transformation}, \text{Features}] \rightarrow \text{Training} \rightarrow \text{Evaluation}$$
 
 Prefect handles task caching, retry policies, and state transitions, while a standalone runner CLI (`python -m src.pipeline`) enables immediate headless reproduction in under 20 seconds.
+
+### 8.1 Workflow Execution Run
+Below is the verification screenshot confirming successful end-to-end execution of all pipeline tasks (Data Ingestion, Quality Validation, Preparation, Transformation, Feature Store, Model Training, and Evaluation):
+
+![Successful Workflow Run](orchestration_run_screenshot.png)
+*Figure 1: Successful end-to-end execution of all pipeline tasks and metrics evaluation.*
 
 ---
 
